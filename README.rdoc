@@ -1,6 +1,24 @@
 = rack-common_logger-fluent
 
-Description goes here.
+rack middleware for writing access log to fluentd.
+
+== Example
+    # in your config.ru
+    
+    require 'fluent-logger'
+    require 'rack/common_logger/fluent'
+    
+    logger = Fluent::Logger::FluentLogger.new(nil, :host => 'localhost', :port => 24224)
+    use Rack::CommonLogger::Fluent, 'myapp', logger
+    
+    # if you want to customize format
+    use Rack::CommonLogger::Fluent, 'myapp', logger do |info|
+      result = {}
+    
+      # ...
+    
+      result
+    end
 
 == Contributing to rack-common_logger-fluent
  
