@@ -24,10 +24,10 @@ module Rack
     class Fluent
       def initialize(app, tag, logger=nil, &format)
         @app = app
-        @logger = logger || Fluent::Logger::FluentLogger.new(nil, :host => 'localhost', :port => 24224)
+        @logger = logger || ::Fluent::Logger::FluentLogger.new(nil, :host => 'localhost', :port => 24224)
         @tag = tag
         @format = format || lambda do |info|
-          self.default_format
+          self.default_format(info)
         end
       end
 
@@ -39,7 +39,7 @@ module Rack
         [status, header, body]
       end
 
-      def default_format
+      def default_format(info)
           hash = {}
 
           hash["remote_addr"]    = info[:env]["HTTP_X_FORWARDED_FOR"] || info[:env]["REMOTE_ADDR"] || '-'
@@ -49,7 +49,7 @@ module Rack
           hash["query_string"]   = info[:env]["QUERY_STRING"].empty? ? "" : '?' + info[:env]["QUERY_STRING"]
           hash["http_version"]   = info[:env]["HTTP_VERSION"]
           hash["http_status"]    = info[:status].to_s[0..3]
-          hash["content_length"] = info[:length]
+          hash["content_length"] = info[:length].to_i
           hash["runtime"]        = info[:runtime]
 
           hash
@@ -59,7 +59,7 @@ module Rack
         now = Time.now
         length = extract_content_length(header)
         result = @format.call({ :env => env, :status => status, :header => header, :now => now, :runtime => now - began_at, :length => length })
-        @logger.post(result)
+        @logger.post(@tag, result)
       end
 
       def extract_content_length(headers)

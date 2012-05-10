@@ -2,6 +2,8 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'rspec'
 require 'rack-common_logger-fluent'
+require 'rack/lint'
+require 'rack/mock'
 
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.
