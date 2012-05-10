@@ -49,6 +49,7 @@ module Rack
           hash["query_string"]   = info[:env]["QUERY_STRING"].empty? ? "" : '?' + info[:env]["QUERY_STRING"]
           hash["http_version"]   = info[:env]["HTTP_VERSION"]
           hash["http_status"]    = info[:status].to_s[0..3]
+          hash["user_agent"]     = info[:env]["HTTP_USER_AGENT"]
           hash["content_length"] = info[:length]
           hash["runtime"]        = info[:runtime]
 
