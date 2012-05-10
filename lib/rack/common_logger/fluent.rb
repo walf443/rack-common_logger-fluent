@@ -49,7 +49,7 @@ module Rack
           hash["query_string"]   = info[:env]["QUERY_STRING"].empty? ? "" : '?' + info[:env]["QUERY_STRING"]
           hash["http_version"]   = info[:env]["HTTP_VERSION"]
           hash["http_status"]    = info[:status].to_s[0..3]
-          hash["content_length"] = info[:length].to_i
+          hash["content_length"] = info[:length]
           hash["runtime"]        = info[:runtime]
 
           hash
@@ -58,6 +58,7 @@ module Rack
       def log(env, status, header, began_at)
         now = Time.now
         length = extract_content_length(header)
+        length = length == '-' ? nil : length.to_i
         result = @format.call({ :env => env, :status => status, :header => header, :now => now, :runtime => now - began_at, :length => length })
         @logger.post(@tag, result)
       end
