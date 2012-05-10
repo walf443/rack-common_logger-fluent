@@ -27,6 +27,19 @@ module Rack
         @logger = logger || Fluent::Logger::FluentLogger.new(nil, :host => 'localhost', :port => 24224)
         @tag = tag
         @format = format || lambda do |info|
+          self.default_format
+        end
+      end
+
+      def call(env)
+        began_at = Time.now
+        status, header, body = @app.call(env)
+        header = Utils::HeaderHash.new(header)
+        body = BodyProxy.new(body) { log(env, status, header, began_at) }
+        [status, header, body]
+      end
+
+      def default_format
           hash = {}
 
           hash["remote_addr"]    = info[:env]["HTTP_X_FORWARDED_FOR"] || info[:env]["REMOTE_ADDR"] || '-'
@@ -40,15 +53,6 @@ module Rack
           hash["runtime"]        = info[:runtime]
 
           hash
-        end
-      end
-
-      def call(env)
-        began_at = Time.now
-        status, header, body = @app.call(env)
-        header = Utils::HeaderHash.new(header)
-        body = BodyProxy.new(body) { log(env, status, header, began_at) }
-        [status, header, body]
       end
 
       def log(env, status, header, began_at)
