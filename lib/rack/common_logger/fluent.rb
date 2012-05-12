@@ -16,21 +16,21 @@ module Rack
     #   #   #=> 2012-05-12T17:56:50+09:00       myapp.access      {"remote_addr":"127.0.0.1","date":"2012-05-12T17:56:50+09:00","request_method":"GET","path_info":"/","query_string":"?body=1","http_version":"HTTP/1.1","http_status":304,"user_agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.168 Safari/535.19","content_type":null,"content_length":null,"runtime":0.007976}
     #
     #   # if you want to customize format
-    #   use Rack::CommonLogger::Fluent, 'myapp', logger do |info|
+    #   format = lambda do |info|
     #     result = {}
     #
     #     # ...
     #
     #     result
     #   end
-    # 
+    #   use Rack::CommonLogger::Fluent, 'myapp', logger, format
     #
     class Fluent
       # tag is Fluent::Logger's tag for access log.
       # +logger+ should implement post(+tag+, +message) method. logger is a Fluent::Logger::FluentLogger object.
       # +format+ is block that take Hash that has +env+(Rack's env), +status+, +header+, +now+, +runtime+, and should return Hash that contain access_log element.
       # +format+ is optional and use +default_format+ as default.
-      def initialize(app, tag, logger=nil, &format)
+      def initialize(app, tag, logger=nil, format)
         @app = app
         @logger = logger || ::Fluent::Logger::FluentLogger.new(nil, :host => 'localhost', :port => 24224)
         @tag = tag
