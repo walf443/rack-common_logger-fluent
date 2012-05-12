@@ -38,6 +38,15 @@ module Rack
         end
       end
 
+      # run application and post access information to fluentd.
+      #
+      # This middleware set @logger to rack.fluent_logger of env.
+      # So your application can post to fluentd like this.
+      #   def call(env)
+      #     env["fluent_logger"].post("app.log", { "message": "xxxxxx" })
+      #     # ...
+      #   end
+      #
       def call(env)
         env["rack.fluent_logger"] = @logger
         began_at = Time.now
@@ -47,18 +56,18 @@ module Rack
         [status, header, body]
       end
 
-      # this method return default_format.
+      # This method return default_format.
       #   remote_addr:    HTTP_X_FORWARDED_FOR or REMOTE_ADDR
       #   date:           iso8601 datetime string.
       #   request_method: rack's REQUEST_METHOD
       #   path_info:      rack's PATH_INFO
       #   query_string:   rack's QUERY_STRING
       #   http_version:   rack's HTTP_VERSION
-      #   http_status:    response code.
+      #   http_status:    response code. (Fixnum)
       #   user_agent:     User-Agent request header.
       #   content_type:   Content-Type response header.
-      #   content_length: Content-Length response header.
-      #   runtime:        seconds of application running.
+      #   content_length: Content-Length response header.(Fixnum)
+      #   runtime:        seconds of application running. (Float)
       #
       def default_format(info)
           hash = {}
