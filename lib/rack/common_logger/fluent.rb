@@ -35,6 +35,7 @@ module Rack
       end
 
       def call(env)
+        env["rack.fluent_logger"] = @logger
         began_at = Time.now
         status, header, body = @app.call(env)
         header = Utils::HeaderHash.new(header)
