@@ -52,7 +52,7 @@ module Rack
           hash["http_status"]    = info[:status].to_s[0..3].to_i
           hash["user_agent"]     = info[:env]["HTTP_USER_AGENT"]
           hash["content_type"]   = info[:header]["Content-Type"]
-          hash["content_length"] = info[:length]
+          hash["content_length"] = info[:header]["Content-Length"] ? info[:header]["Content-Length"].to_i : nil
           hash["runtime"]        = info[:runtime]
 
           hash
@@ -60,16 +60,10 @@ module Rack
 
       def log(env, status, header, began_at)
         now = Time.now
-        length = extract_content_length(header)
-        length = length == '-' ? nil : length.to_i
-        result = @format.call({ :env => env, :status => status, :header => header, :now => now, :runtime => now - began_at, :length => length })
+        result = @format.call({ :env => env, :status => status, :header => header, :now => now, :runtime => now - began_at })
         @logger.post(@tag, result)
       end
 
-      def extract_content_length(headers)
-        value = headers['Content-Length'] or return '-'
-        value.to_s == '0' ? '-' : value
-      end
     end
   end
 end
