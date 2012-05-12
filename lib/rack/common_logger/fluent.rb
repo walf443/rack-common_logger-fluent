@@ -24,6 +24,7 @@ module Rack
     #     result
     #   end
     # 
+    #
     class Fluent
       # tag is Fluent::Logger's tag for access log.
       # +logger+ should implement post(+tag+, +message) method. logger is a Fluent::Logger::FluentLogger object.
@@ -57,6 +58,7 @@ module Rack
       end
 
       # This method return default_format.
+      #   hostname:       HTTP_HOST or SERVER_NAME
       #   remote_addr:    HTTP_X_FORWARDED_FOR or REMOTE_ADDR
       #   date:           iso8601 datetime string.
       #   request_method: rack's REQUEST_METHOD
@@ -72,6 +74,7 @@ module Rack
       def default_format(info)
           hash = {}
 
+          hash["hostname"]       = info[:env]["HTTP_HOST"] || info[:env]["SERVER_NAME"]
           hash["remote_addr"]    = info[:env]["HTTP_X_FORWARDED_FOR"] || info[:env]["REMOTE_ADDR"] || nil
           hash["date"]           = info[:now].iso8601
           hash["request_method"] = info[:env]["REQUEST_METHOD"]
