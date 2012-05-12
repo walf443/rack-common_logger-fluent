@@ -13,7 +13,9 @@ describe "RackCommonLoggerFluent" do
     res = Rack::MockRequest.new(Rack::CommonLogger::Fluent.new(@app, 'myapp', logger)).get('/')
     logger.queue.size.should == 1
     message = logger.queue.first
+    message["hostname"].should == "example.org"
     message["content_length"].should == 6
+    message["content_type"].should == "text/html"
     message["request_method"].should == "GET"
     message["path_info"].should == "/"
     message["http_status"].should == 200
