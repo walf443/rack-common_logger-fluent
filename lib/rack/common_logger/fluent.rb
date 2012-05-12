@@ -17,8 +17,8 @@ module Rack
     #
     #   # if you want to customize format
     #   format = lambda do |info|
-    #     result = {}
-    #
+    #     result = Rack::CommonLogger::Fluent.default_format
+    #     result["xxxxxx"] = info[:env]["appx.xxxxxx"]
     #     # ...
     #
     #     result
@@ -30,12 +30,12 @@ module Rack
       # +logger+ should implement post(+tag+, +message) method. logger is a Fluent::Logger::FluentLogger object.
       # +format+ is block that take Hash that has +env+(Rack's env), +status+, +header+, +now+, +runtime+, and should return Hash that contain access_log element.
       # +format+ is optional and use +default_format+ as default.
-      def initialize(app, tag, logger=nil, format)
+      def initialize(app, tag, logger=nil, format=nil)
         @app = app
         @logger = logger || ::Fluent::Logger::FluentLogger.new(nil, :host => 'localhost', :port => 24224)
         @tag = tag
         @format = format || lambda do |info|
-          self.default_format(info)
+          self.class.default_format(info)
         end
       end
 
@@ -71,7 +71,7 @@ module Rack
       #   content_length: Content-Length response header.(Fixnum)
       #   runtime:        seconds of application running. (Float)
       #
-      def default_format(info)
+      def self.default_format(info)
           hash = {}
 
           hash["hostname"]       = info[:env]["HTTP_HOST"] || info[:env]["SERVER_NAME"]

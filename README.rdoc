@@ -12,13 +12,14 @@ rack middleware for writing access log to fluentd.
     use Rack::CommonLogger::Fluent, 'myapp', logger
     
     # if you want to customize format
-    use Rack::CommonLogger::Fluent, 'myapp', logger do |info|
-      result = {}
-    
-      # ...
+    format = lambda do |info|
+      result = Rack::CommonLogger::Fluent.default_format
+      # customize format.
+      result["xxxxxx"] = info[:env]["appx.xxxxxx"]
     
       result
     end
+    use Rack::CommonLogger::Fluent, 'myapp', logger, format
 
 == WARN
 
