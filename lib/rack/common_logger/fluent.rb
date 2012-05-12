@@ -1,4 +1,5 @@
 require 'fluent-logger'
+require 'time'
 
 module Rack
   class CommonLogger
@@ -42,14 +43,15 @@ module Rack
       def default_format(info)
           hash = {}
 
-          hash["remote_addr"]    = info[:env]["HTTP_X_FORWARDED_FOR"] || info[:env]["REMOTE_ADDR"] || '-'
-          hash["accessed_at"]    = info[:now].strftime('%d/%b/%Y %H:%M:%S')
+          hash["remote_addr"]    = info[:env]["HTTP_X_FORWARDED_FOR"] || info[:env]["REMOTE_ADDR"] || nil
+          hash["accessed_at"]    = info[:now].iso8601
           hash["request_method"] = info[:env]["REQUEST_METHOD"]
-          hash["path_info"]      = info[:env]["PATH_INFO"]
+          hash["path_info"]      = info[:env]["PATH_INFO"].gsub("%2F", '/') # some case "/" to be %2F.
           hash["query_string"]   = info[:env]["QUERY_STRING"].empty? ? "" : '?' + info[:env]["QUERY_STRING"]
           hash["http_version"]   = info[:env]["HTTP_VERSION"]
-          hash["http_status"]    = info[:status].to_s[0..3]
+          hash["http_status"]    = info[:status].to_s[0..3].to_i
           hash["user_agent"]     = info[:env]["HTTP_USER_AGENT"]
+          hash["content_type"]   = info[:env]["CONTENT_TYPE"]
           hash["content_length"] = info[:length]
           hash["runtime"]        = info[:runtime]
 

@@ -16,6 +16,6 @@ describe "RackCommonLoggerFluent" do
     message["content_length"].should == 6
     message["request_method"].should == "GET"
     message["path_info"].should == "/"
-    message["http_status"].should == "200"
+    message["http_status"].should == 200
   end
 end
