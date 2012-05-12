@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "rack-common_logger-fluent"
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Keiji, Yoshimi"]
-  s.date = "2012-05-11"
+  s.date = "2012-05-12"
   s.description = "rack middleware for writing access log to fluentd. "
   s.email = "walf443@gmail.com"
   s.extra_rdoc_files = [
@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
     "VERSION",
     "lib/rack-common_logger-fluent.rb",
     "lib/rack/common_logger/fluent.rb",
+    "rack-common_logger-fluent.gemspec",
     "spec/rack-common_logger-fluent_spec.rb",
     "spec/spec_helper.rb"
   ]
