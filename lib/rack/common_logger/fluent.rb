@@ -11,7 +11,9 @@ module Rack
     #   require 'rack/common_logger/fluent'
     #
     #   logger = Fluent::Logger::FluentLogger.new(nil, :host => 'localhost', :port => 24224)
-    #   use Rack::CommonLogger::Fluent, 'myapp', logger
+    #   use Rack::CommonLogger::Fluent, 'myapp.access', logger
+    #   # will output to log
+    #   #   #=> 2012-05-12T17:56:50+09:00       myapp.access      {"remote_addr":"127.0.0.1","accessed_at":"2012-05-12T17:56:50+09:00","request_method":"GET","path_info":"/","query_string":"?body=1","http_version":"HTTP/1.1","http_status":304,"user_agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.168 Safari/535.19","content_type":null,"content_length":null,"runtime":0.007976}
     #
     #   # if you want to customize format
     #   use Rack::CommonLogger::Fluent, 'myapp', logger do |info|
