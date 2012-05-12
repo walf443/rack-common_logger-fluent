@@ -51,7 +51,7 @@ module Rack
           hash["http_version"]   = info[:env]["HTTP_VERSION"]
           hash["http_status"]    = info[:status].to_s[0..3].to_i
           hash["user_agent"]     = info[:env]["HTTP_USER_AGENT"]
-          hash["content_type"]   = info[:env]["CONTENT_TYPE"]
+          hash["content_type"]   = info[:header]["Content-Type"]
           hash["content_length"] = info[:length]
           hash["runtime"]        = info[:runtime]
 
