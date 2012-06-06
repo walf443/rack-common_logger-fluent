@@ -9,9 +9,11 @@ def main(argv)
   opt.on('-c', '--column=s') {|v| options[:column] = v }
   opt.on('-v', '--value=s') {|v| options[:value] = v }
   opt.on('-m', '--method=s') {|v| options[:method] = v }
+  opt.on('-m', '--mode=s') {|v| options[:mode] = v }
   opt.parse!(argv)
   
   options[:method] ||= 'regexp'
+  options[:mode] ||= 'filter'
   
   regexp = Regexp.compile(options[:value], 'i')
   
@@ -22,18 +24,26 @@ def main(argv)
   
     case options[:method]
     when 'regexp'
-      if regexp.match(data[options[:column]].to_s)
-        puts line
-      end
+      show_if_match(line, options) {|options| regexp.match(data[options[:column]].to_s) }
     when 'lt'
-      if data[options[:column]] <= options[:value].to_f
-        puts line
-      end
+      show_if_match(line, options) {|options| data[options[:column]] <= options[:value].to_f }
     when 'gt'
-      if data[options[:column]] >= options[:value].to_f
-        puts line
-      end
+      show_if_match(line, options) {|options| data[options[:column]] >= options[:value].to_f }
     else
+    end
+  end
+end
+
+def show_if_match(line, options, &block)
+  if block.call(options)
+    if options[:mode] == "color"
+      puts "\033[31m#{line}\033[0m"
+    else
+      puts line
+    end
+  else
+    if options[:mode] == "color"
+      puts line
     end
   end
 end
