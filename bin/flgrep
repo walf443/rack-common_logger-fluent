@@ -2,36 +2,43 @@
 
 require 'optparse'
 require 'json'
-options = {}
-opt = OptionParser.new
-opt.on('-c', '--column=s') {|v| options[:column] = v }
-opt.on('-v', '--value=s') {|v| options[:value] = v }
-opt.on('-m', '--method=s') {|v| options[:method] = v }
-opt.parse!(ARGV)
 
-options[:method] ||= 'regexp'
-
-regexp = Regexp.compile(options[:value], 'i')
-
-while line = STDIN.gets
-  line.chomp!
-  date, tag, data = line.split(/\t/)
-  data = JSON.parse(data)
-
-  case options[:method]
-  when 'regexp'
-    if regexp.match(data[options[:column]].to_s)
-      puts line
+def main(argv)
+  options = {}
+  opt = OptionParser.new
+  opt.on('-c', '--column=s') {|v| options[:column] = v }
+  opt.on('-v', '--value=s') {|v| options[:value] = v }
+  opt.on('-m', '--method=s') {|v| options[:method] = v }
+  opt.parse!(argv)
+  
+  options[:method] ||= 'regexp'
+  
+  regexp = Regexp.compile(options[:value], 'i')
+  
+  while line = STDIN.gets
+    line.chomp!
+    date, tag, data = line.split(/\t/)
+    data = JSON.parse(data)
+  
+    case options[:method]
+    when 'regexp'
+      if regexp.match(data[options[:column]].to_s)
+        puts line
+      end
+    when 'lt'
+      if data[options[:column]] <= options[:value].to_f
+        puts line
+      end
+    when 'gt'
+      if data[options[:column]] >= options[:value].to_f
+        puts line
+      end
+    else
     end
-  when 'lt'
-    if data[options[:column]] <= options[:value].to_f
-      puts line
-    end
-  when 'gt'
-    if data[options[:column]] >= options[:value].to_f
-      puts line
-    end
-  else
   end
+end
+
+if $0 == __FILE__
+  main(ARGV)
 end
 
