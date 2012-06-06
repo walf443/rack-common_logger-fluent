@@ -52,3 +52,16 @@ if $0 == __FILE__
   main(ARGV)
 end
 
+__END__
+
+= Example =
+
+  # show access log that runtime is greater than 0.1
+  $ flgrep --column=runtime --value=0.1 --method=gt
+
+  # show access log thath match top page.
+  $ flgrep --column=path_info --value='^/$'
+
+  # color match.
+  $ flgrep --column=path_info --value='^/$' --mode=color
+
