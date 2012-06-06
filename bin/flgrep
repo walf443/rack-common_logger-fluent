@@ -9,7 +9,7 @@ def main(argv)
   opt.on('-c', '--column=s') {|v| options[:column] = v }
   opt.on('-v', '--value=s') {|v| options[:value] = v }
   opt.on('-m', '--method=s') {|v| options[:method] = v }
-  opt.on('-m', '--mode=s') {|v| options[:mode] = v }
+  opt.on('--mode=s') {|v| options[:mode] = v }
   opt.parse!(argv)
   
   options[:method] ||= 'regexp'
