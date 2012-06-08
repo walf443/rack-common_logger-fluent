@@ -8,6 +8,7 @@ def main(argv)
   opt = OptionParser.new
   opt.on('-c', '--column=s', 'column name to target') {|v| options[:column] = v }
   opt.on('-v', '--value=s', 'value for filtering') {|v| options[:value] = v }
+  opt.on('-d', '--date[=s]', 'filtering by date') {|v| options[:date] = v }
   opt.on('-m', '--method=(regexp|gt|lt)', 'regexp (default): match by regexp, gt: greater than, lt: less than') {|v| options[:method] = v }
   opt.on('--mode=(filter|color)', 'filter (default): like grep, color: show colored line when match condition.') {|v| options[:mode] = v }
   opt.parse!(argv)
@@ -20,10 +21,16 @@ def main(argv)
   options[:mode] ||= 'filter'
   
   regexp = Regexp.compile(options[:value], 'i')
+
+  date_regexp = options[:date] ? Regexp.compile(options[:date], 'i') : nil
   
+  tab_regexp = /\t/
   while line = STDIN.gets
     line.chomp!
-    date, tag, data = line.split(/\t/)
+    date, tag, data = line.split(tab_regexp)
+    if date_regexp
+      next if date !~ date_regexp
+    end
     data = JSON.parse(data)
   
     case options[:method]
