@@ -6,11 +6,15 @@ require 'json'
 def main(argv)
   options = {}
   opt = OptionParser.new
-  opt.on('-c', '--column=s') {|v| options[:column] = v }
-  opt.on('-v', '--value=s') {|v| options[:value] = v }
-  opt.on('-m', '--method=s') {|v| options[:method] = v }
-  opt.on('--mode=s') {|v| options[:mode] = v }
+  opt.on('-c', '--column=s', 'column name to target') {|v| options[:column] = v }
+  opt.on('-v', '--value=s', 'value for filtering') {|v| options[:value] = v }
+  opt.on('-m', '--method=(regexp|gt|lt)', 'regexp (default): match by regexp, gt: greater than, lt: less than') {|v| options[:method] = v }
+  opt.on('--mode=(filter|color)', 'filter (default): like grep, color: show colored line when match condition.') {|v| options[:mode] = v }
   opt.parse!(argv)
+  if options[:column].nil? or options[:value].nil?
+    warn opt.help
+    exit(1)
+  end
   
   options[:method] ||= 'regexp'
   options[:mode] ||= 'filter'
@@ -59,7 +63,7 @@ __END__
   # show access log that runtime is greater than 0.1
   $ flgrep --column=runtime --value=0.1 --method=gt
 
-  # show access log thath match top page.
+  # show access log that match top page.
   $ flgrep --column=path_info --value='^/$'
 
   # color match.
