@@ -2,6 +2,7 @@
 
 require 'optparse'
 require 'json'
+require 'time'
 
 def main(argv)
   options = {}
@@ -9,6 +10,8 @@ def main(argv)
   opt.on('-c', '--column=s', 'column name to target') {|v| options[:column] = v }
   opt.on('-v', '--value=s', 'value for filtering') {|v| options[:value] = v }
   opt.on('-d', '--date[=s]', 'filtering by date') {|v| options[:date] = v }
+  opt.on('--until[=s]', 'filtering by date until ...') {|v| options[:until] = v }
+  opt.on('--since[=s]', 'filtering by date since ...') {|v| options[:since] = v }
   opt.on('-m', '--method=(regexp|gt|lt)', 'regexp (default): match by regexp, gt: greater than, lt: less than') {|v| options[:method] = v }
   opt.on('--mode=(filter|color)', 'filter (default): like grep, color: show colored line when match condition.') {|v| options[:mode] = v }
   opt.parse!(argv)
@@ -23,6 +26,8 @@ def main(argv)
   regexp = Regexp.compile(options[:value], 'i')
 
   date_regexp = options[:date] ? Regexp.compile(options[:date], 'i') : nil
+  since_date = options[:since] ? Time.parse(options[:since]) : nil
+  until_date = options[:until] ? Time.parse(options[:until]) : nil
   
   tab_regexp = /\t/
   while line = STDIN.gets
@@ -30,6 +35,14 @@ def main(argv)
     date, tag, data = line.split(tab_regexp)
     if date_regexp
       next if date !~ date_regexp
+    end
+    if since_date
+      dt = Time.parse(date)
+      next if dt < since_date
+    end
+    if until_date
+      dt = Time.parse(date)
+      next if dt > until_date
     end
     data = JSON.parse(data)
   
