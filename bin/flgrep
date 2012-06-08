@@ -72,9 +72,7 @@ def show_if_match(line, options, &block)
   end
 end
 
-if $0 == __FILE__
-  main(ARGV)
-end
+main(ARGV)
 
 __END__
 
