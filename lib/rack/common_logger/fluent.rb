@@ -67,6 +67,7 @@ module Rack
       #   http_version:   rack's HTTP_VERSION
       #   http_status:    response code. (Fixnum)
       #   user_agent:     User-Agent request header.
+      #   referer:        Referer request header.
       #   content_type:   Content-Type response header.
       #   content_length: Content-Length response header.(Fixnum)
       #   runtime:        seconds of application running. (Float)
@@ -83,6 +84,7 @@ module Rack
           hash["http_version"]   = info[:env]["HTTP_VERSION"]
           hash["http_status"]    = info[:status].to_s[0..3].to_i
           hash["user_agent"]     = info[:env]["HTTP_USER_AGENT"]
+          hash["referer"]        = info[:env]["HTTP_REFERER"]
           hash["content_type"]   = info[:header]["Content-Type"]
           hash["content_length"] = info[:header]["Content-Length"] ? info[:header]["Content-Length"].to_i : nil
           hash["runtime"]        = info[:runtime]
