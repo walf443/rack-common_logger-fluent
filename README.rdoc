@@ -21,10 +21,6 @@ rack middleware for writing access log to fluentd.
     end
     use Rack::CommonLogger::Fluent, 'myapp', logger, format
 
-== WARN
-
-THIS PROJECT is early development. compatibility may break.
-
 == Contributing to rack-common_logger-fluent
  
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
