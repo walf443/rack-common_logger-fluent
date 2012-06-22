@@ -1,7 +1,12 @@
 #!/usr/bin/env ruby
 
 require 'optparse'
-require 'json'
+begin
+  require 'yajl'
+  require 'yajl/json_gem'
+rescue LoadError => e
+  require 'json'
+end
 require 'time'
 
 def main(argv)
